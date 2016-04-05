@@ -1,5 +1,39 @@
 #Tutorial 01
 
+##Exercise/Questions
+Investigate how the vertice's coordinates relate to pixel positions within the output window.
+ 
+ - What are the smallest and largest x- and y-values for vertices that can be displayed within the output window?
+ 	- smalles x- and y-value = -1
+ 	- largest x- and y-value = 1
+ 
+ - What happens to your geometry if you re-size the output window?
+ 	- Painted object resizes proportionally to the aspect ratio of the output window
+ 
+ - What happens if you change the z-values of your vertices (currently set to 0)?
+ 	- If the z-value ranges between -1 and 1, nothing will happen. If the z-value exceed theese limits, the Triangle get cut at the specific corner. Maybe that happens due to the near and the far plane?!
+ 
+
+Understand how the `Triangles` are indices into the `Vertices` array.
+ 
+ - Add another vertex to the `Vertices` array. 
+ 
+ - Add another triangle (three more indices) to the `Triangles` array to display a rectangle using four entries in `Vertices` and six entries in `Triangles`.
+ 
+ - What happens if you change the order of the indices in the `Triangles` array? Try to explain your observation.
+ 	- Depending on how the culling is configured ([anti-]clockwise) a Triangle is visible or invisible. The order of the indicies define, which side of the mesh is visible.
+ 
+ 
+Understand the concept of "the current Shader".
+
+ - Add one more geometry `Mesh` and another pixel shader string (setting a different color).
+ 
+ - Compile another shader using the new pixel shader (and the exisiting vertex shader). Store both shaders (resulting from the two `RC.CreateShader` calls) in fields rather than in local variables. 
+ 
+ - Within `RenderAFrame` render each of the two meshes with a different shader (call `RC.SetShader` before `RC.Render`).
+ 
+  
+
 ##Goals
  - Understand how FUSEE deals with multiple platforms (desktop, web, Android).
  - Understand the basic setup of a FUSEE application.
@@ -117,34 +151,7 @@ Note how the pixel shader does nothing but copy the incoming vertex (`fuVertex`)
  
     ![Result](_images/Tut01Result.png)
 
-##Exercise/Questions
-Investigate how the vertice's coordinates relate to pixel positions within the output window.
- 
- - What are the smallest and largest x- and y-values for vertices that can be displayed within the output window?
- 
- - What happens to your geometry if you re-size the output window? 
- 
- - What happens if you change the z-values of your vertices (currently set to 0)?
- 
 
-Understand how the `Triangles` are indices into the `Vertices` array.
- 
- - Add another vertex to the `Vertices` array. 
- 
- - Add another triangle (three more indices) to the `Triangles` array to display a rectangle using four entries in `Vertices` and six entries in `Triangles`.
- 
- - What happens if you change the order of the indices in the `Triangles` array? Try to explain your observation.
- 
- 
-Understand the concept of "the current Shader".
-
- - Add one more geometry `Mesh` and another pixel shader string (setting a different color).
- 
- - Compile another shader using the new pixel shader (and the exisiting vertex shader). Store both shaders (resulting from the two `RC.CreateShader` calls) in fields rather than in local variables. 
- 
- - Within `RenderAFrame` render each of the two meshes with a different shader (call `RC.SetShader` before `RC.Render`).
- 
-  
  
 
  
