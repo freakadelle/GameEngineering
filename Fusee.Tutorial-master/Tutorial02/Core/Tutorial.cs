@@ -10,7 +10,6 @@ using Fusee.Serialization;
 
 namespace Fusee.Tutorial.Core
 {
-
     [FuseeApplication(Name = "Tutorial Example", Description = "The official FUSEE Tutorial.")]
     public class Tutorial : RenderCanvas
     {
@@ -20,7 +19,13 @@ namespace Fusee.Tutorial.Core
 
             void main()
             {
-                gl_Position = vec4(fuVertex, 1.0);
+                float alpha = 3.1415; // (45 degrees)
+                float s = sin(alpha);
+                float c = cos(alpha);
+                gl_Position = vec4( fuVertex.x * c - fuVertex.y * s,   // The transformed x coordinate
+                                    fuVertex.x * s + fuVertex.y * c,   // The transformed y coordinate
+                                    fuVertex.z,                        // z is unchanged
+                                    1.0);
             }";
 
         private const string _pixelShader = @"
@@ -41,11 +46,18 @@ namespace Fusee.Tutorial.Core
             {
                 Vertices = new[]
                 {
-                    new float3(-0.75f, -0.75f, 0),
-                    new float3(0.75f, -0.75f, 0),
-                    new float3(0, 0.75f, 0),
+                    new float3(-0.8165f, -0.3333f, -0.4714f), // Vertex 0
+                    new float3(0.8165f, -0.3333f, -0.4714f), // Vertex 1
+                    new float3(0, -0.3333f, 0.9428f), // Vertex 2
+                    new float3(0, 1, 0), // Vertex 3
                 },
-                Triangles = new ushort[] {0, 1, 2},
+                Triangles = new ushort[]
+                {
+                    0, 2, 1, // Triangle 0 "Bottom" facing towards negative y axis
+                    0, 1, 3, // Triangle 1 "Back side" facing towards negative z axis
+                    1, 2, 3, // Triangle 2 "Right side" facing towards positive x axis
+                    2, 0, 3, // Triangle 3 "Left side" facing towrads negative x axis
+                },
             };
 
             var shader = RC.CreateShader(_vertexShader, _pixelShader);
@@ -83,6 +95,5 @@ namespace Fusee.Tutorial.Core
             var projection = float4x4.CreatePerspectiveFieldOfView(MathHelper.PiOver4, aspectRatio, 1, 20000);
             RC.Projection = projection;
         }
-
     }
 }
