@@ -7,8 +7,8 @@ using Android.Views;
 using Android.Widget;
 using Fusee.Base.Common;
 using Fusee.Base.Core;
-using Fusee.Base.Imp.Android;
-using Fusee.Engine.Imp.Graphics.Android;
+//using Fusee.Base.Imp.Android;
+//using Fusee.Engine.Imp.Graphics.Android;
 using Fusee.Serialization;
 using Fusee.Tutorial.Core;
 using Font = Fusee.Base.Core.Font;
@@ -32,57 +32,57 @@ namespace Fusee.Tutorial.Android
 		        // SetContentView(new LibPaintingView(ApplicationContext, null));
 
 		        // Inject Fusee.Engine.Base InjectMe dependencies
-		        IO.IOImp = new IOImp(ApplicationContext);
+		        //IO.IOImp = new IOImp(ApplicationContext);
 
-                var fap = new Fusee.Base.Imp.Android.ApkAssetProvider(ApplicationContext);
-                fap.RegisterTypeHandler(
-                    new AssetHandler
-                    {
-                        ReturnedType = typeof(Font),
-                        Decoder = delegate (string id, object storage)
-                        {
-                            if (Path.GetExtension(id).ToLower().Contains("ttf"))
-                                return new Font
-                                {
-                                    _fontImp = new FontImp((Stream)storage)
-                                };
-                            return null;
-                        },
-                        Checker = delegate (string id) {
-                            return Path.GetExtension(id).ToLower().Contains("ttf");
-                        }
-                    });
-                fap.RegisterTypeHandler(
-                    new AssetHandler
-                    {
-                        ReturnedType = typeof(SceneContainer),
-                        Decoder = delegate (string id, object storage)
-                        {
-                            if (Path.GetExtension(id).ToLower().Contains("fus"))
-                            {
-                                var ser = new Serializer();
-                                return ser.Deserialize((Stream)storage, null, typeof(SceneContainer)) as SceneContainer;
-                            }
-                            return null;
-                        },
-                        Checker = delegate (string id)
-                        {
-                            return Path.GetExtension(id).ToLower().Contains("fus");
-                        }
-                    });
-                AssetStorage.RegisterProvider(fap);
+          //      var fap = new Fusee.Base.Imp.Android.ApkAssetProvider(ApplicationContext);
+          //      fap.RegisterTypeHandler(
+                    //new AssetHandler
+                    //{
+                    //    ReturnedType = typeof(Font),
+                    //    Decoder = delegate (string id, object storage)
+                    //    {
+                    //        if (Path.GetExtension(id).ToLower().Contains("ttf"))
+                    //            return new Font
+                    //            {
+                    //                //_fontImp = new FontImp((Stream)storage)
+                    //            };
+                    //        return null;
+                    //    },
+                    //    Checker = delegate (string id) {
+                    //        return Path.GetExtension(id).ToLower().Contains("ttf");
+                    //    }
+                    //});
+                //fap.RegisterTypeHandler(
+                    //new AssetHandler
+                    //{
+                    //    ReturnedType = typeof(SceneContainer),
+                    //    Decoder = delegate (string id, object storage)
+                    //    {
+                    //        if (Path.GetExtension(id).ToLower().Contains("fus"))
+                    //        {
+                    //            var ser = new Serializer();
+                    //            return ser.Deserialize((Stream)storage, null, typeof(SceneContainer)) as SceneContainer;
+                    //        }
+                    //        return null;
+                    //    },
+                    //    Checker = delegate (string id)
+                    //    {
+                    //        return Path.GetExtension(id).ToLower().Contains("fus");
+                    //    }
+                    //});
+                //AssetStorage.RegisterProvider(fap);
 
                 var app = new Core.Tutorial();
 
 		        // Inject Fusee.Engine InjectMe dependencies (hard coded)
-		        RenderCanvasImp rci = new RenderCanvasImp(ApplicationContext, null, delegate { app.Run(); });
-		        app.CanvasImplementor = rci;
-		        app.ContextImplementor = new RenderContextImp(rci, ApplicationContext);
+		        //RenderCanvasImp rci = new RenderCanvasImp(ApplicationContext, null, delegate { app.Run(); });
+		        //app.CanvasImplementor = rci;
+		        //app.ContextImplementor = new RenderContextImp(rci, ApplicationContext);
 
-		        SetContentView(rci.View);
+		        //SetContentView(rci.View);
 
-		        Engine.Core.Input.AddDriverImp(
-		            new Fusee.Engine.Imp.Graphics.Android.RenderCanvasInputDriverImp(app.CanvasImplementor));
+		        //Engine.Core.Input.AddDriverImp(
+		        //    new Fusee.Engine.Imp.Graphics.Android.RenderCanvasInputDriverImp(app.CanvasImplementor));
 		        // Engine.Core.Input.AddDriverImp(new Fusee.Engine.Imp.Graphics.Android.WindowsTouchInputDriverImp(app.CanvasImplementor));
 		        // Deleayed into rendercanvas imp....app.Run() - SEE DELEGATE ABOVE;
 		    }
