@@ -16,6 +16,10 @@ namespace Fusee.Tutorial.Core
     public class Tutorial : RenderCanvas
     {
         private Mesh _mesh;
+        private Mesh _mesh_2;
+        private Mesh _mesh_3;
+        private Mesh _mesh_4;
+        private Mesh _mesh_5;
 
         //Shader Params
         private IShaderParam _alphaParam_Vertex;
@@ -35,7 +39,7 @@ namespace Fusee.Tutorial.Core
 
             uniform vec3 alpha_v;
             varying vec3 modelpos;
-            varying vec3 position;
+            varying vec4 position;
 
             varying mat4 rotX;
             varying mat4 rotY;
@@ -52,22 +56,26 @@ namespace Fusee.Tutorial.Core
                 float sg = sin(alpha_v.z);
                 float cg = cos(alpha_v.z);
                 
-                rotX = mat4(1.0f, 0.0f, 0.0f, 0.0f,
-                            0.0f, ca,   -sa,  0.0f, 
-                            0.0f, sa,   ca,   0.0f, 
-                            0.0f, 0.0f, 0.0f, 1.0f);
+                rotX = mat4(1, 0,  0,   0,
+                            0, ca, -sa, 0, 
+                            0, sa, ca,  0, 
+                            0, 0,  0,   1);
 
-                rotY = mat4(cb,   0.0f, sb,   0.0f,
-                            0.0f, 1.0f, 0.0f, 0.0f, 
-                            -sb,  0.0f, cb,   0.0f, 
-                            0.0f, 0.0f, 0.0f, 1.0f);
+                rotY = mat4(cb,  0, sb, 0,
+                            0,   1, 0,  0, 
+                            -sb, 0, cb, 0, 
+                            0,   0, 0,  1);
 
-                rotZ = mat4(cg,   -sg,   0.0f,  0.0f,
-                            sg,    cg,   0.0f,  0.0f, 
-                            0.0f,  0.0f, 0.0f,  0.0f, 
-                            0.0f,  0.0f,  0.0f, 1.0f);
+                rotZ = mat4(cg, -sg, 0, 0,
+                            sg, cg,  0, 0, 
+                            0,  0,   0, 0, 
+                            0,  0,   0, 1);
 
-                gl_Position = rotZ * rotY * rotX * vec4(fuVertex, 1.0f);
+
+                //modelpos.x = fuVertex.x * (sa + 1.2);
+                modelpos.y = fuVertex.y * (sb + 1.5);
+                //modelpos.z = fuVertex.z * (sg + 1.0);
+                gl_Position = rotZ * rotY * rotX * vec4(modelpos, 1);
                 position = gl_Position;
             }";
 
@@ -77,7 +85,7 @@ namespace Fusee.Tutorial.Core
             #endif
 
             varying vec3 modelpos;
-            varying vec3 position;
+            varying vec4 position;
             uniform vec2 mousePos_p;
             uniform vec3 alpha_p;    
 
@@ -86,12 +94,39 @@ namespace Fusee.Tutorial.Core
 
                 vec2 modelPos2D = vec2(position.x, position.y);
 
-                float r = (modelpos.x + 0.7) - (distance (mousePos_p, modelPos2D));
-                float g = (modelpos.y + 0.3) - (distance (mousePos_p, modelPos2D));
-                float b = (modelpos.z + 0.7) - (distance (mousePos_p, modelPos2D)) * (sin(alpha_p.y)/sin(alpha_p.y));
-                gl_FragColor = vec4(r, g, b, 1.0f);            
-            }";
+                float dist = distance (mousePos_p, modelPos2D);
+                float s0 = sin(alpha_p.x);
+                float s1 = sin(alpha_p.y);
+                float s2 = sin(alpha_p.z);
 
+                float r = ((modelpos.x + 0.7) * (s1 + 1.0)) - dist;
+                float g = ((modelpos.y + 0.3) * (s2 + 1.0)) - dist;
+                float b = ((modelpos.z + 0.7) * (s0 + 1.0)) - dist;
+
+                dist = 0.5 - dist;
+                float div = 100.0;
+                float modu = 0.1;
+
+                if(mod(modelpos.y, modu) <= s0/div) {
+                    r = dist;
+                    g = dist;
+                    b = dist;
+                } 
+                
+                if(mod(modelpos.x, modu) <= s1/div) {
+                    r = dist;
+                    g = dist;
+                    b = dist;
+                }
+
+                if(mod(modelpos.z, modu) <=  s2/div) {
+                    r = dist;
+                    g = dist;
+                    b = dist;
+                }
+                
+                gl_FragColor = vec4(r, g, b, 1);            
+            }";
 
         // Init is called on startup. 
         public override void Init()
@@ -120,6 +155,102 @@ namespace Fusee.Tutorial.Core
                 },
             };
 
+            _mesh_2 = new Mesh
+            {
+                Vertices = new[]
+               {
+                    new float3(-0.7f, -0.3f, 0f), // Vertex 0
+                    new float3(-0.7f, 0.3f, 0), // Vertex 1
+                    new float3(-0.6f, 0, 0.1f), // Vertex 
+                    new float3(-0.8f, 0f, 0.1f), // Vertex 3
+                    new float3(-0.8f, 0f, -0.1f), // Vertex 4
+                    new float3(-0.6f, 0f, -0.1f) // Vertex 5
+                },
+                Triangles = new ushort[]
+               {
+                    0, 2, 5,
+                    0, 5, 4,
+                    0, 4, 3,
+                    0, 3, 2,
+                    1, 5, 2,
+                    1, 4, 5,
+                    1, 3, 4,
+                    1, 2, 3
+               },
+            };
+
+            _mesh_3 = new Mesh
+            {
+                Vertices = new[]
+              {
+                    new float3(0.7f, -0.3f, 0f), // Vertex 0
+                    new float3(0.7f, 0.3f, 0), // Vertex 1
+                    new float3(0.6f, 0, 0.1f), // Vertex 
+                    new float3(0.8f, 0f, 0.1f), // Vertex 3
+                    new float3(0.8f, 0f, -0.1f), // Vertex 4
+                    new float3(0.6f, 0f, -0.1f) // Vertex 5
+                },
+                Triangles = new ushort[]
+              {
+                    0, 2, 5,
+                    0, 5, 4,
+                    0, 4, 3,
+                    0, 3, 2,
+                    1, 5, 2,
+                    1, 4, 5,
+                    1, 3, 4,
+                    1, 2, 3
+              },
+            };
+
+            _mesh_4 = new Mesh
+            {
+                Vertices = new[]
+              {
+                    new float3(0.0f, -0.3f, 0.7f), // Vertex 0
+                    new float3(0.0f, 0.3f, 0.7f), // Vertex 1
+                    new float3(-0.1f, 0, 0.8f), // Vertex 
+                    new float3(0.1f, 0f, 0.8f), // Vertex 3
+                    new float3(0.1f, 0f, 0.6f), // Vertex 4
+                    new float3(-0.1f, 0f, 0.6f) // Vertex 5
+                },
+                Triangles = new ushort[]
+              {
+                    0, 2, 5,
+                    0, 5, 4,
+                    0, 4, 3,
+                    0, 3, 2,
+                    1, 5, 2,
+                    1, 4, 5,
+                    1, 3, 4,
+                    1, 2, 3
+              },
+            };
+
+            _mesh_5 = new Mesh
+            {
+                Vertices = new[]
+              {
+                    new float3(0.0f, -0.3f, -0.7f), // Vertex 0
+                    new float3(0.0f, 0.3f, -0.7f), // Vertex 1
+                    new float3(-0.1f, 0, -0.8f), // Vertex 
+                    new float3(0.1f, 0f, -0.8f), // Vertex 3
+                    new float3(0.1f, 0f, -0.6f), // Vertex 4
+                    new float3(-0.1f, 0f, -0.6f) // Vertex 5
+                },
+                Triangles = new ushort[]
+              {
+                    0, 2, 5,
+                    0, 5, 4,
+                    0, 4, 3,
+                    0, 3, 2,
+                    1, 5, 2,
+                    1, 4, 5,
+                    1, 3, 4,
+                    1, 2, 3
+              },
+            };
+
             var shader = RC.CreateShader(_vertexShader, _pixelShader);
             RC.SetShader(shader);
 
@@ -134,7 +265,7 @@ namespace Fusee.Tutorial.Core
             steps = 0;
 
             // Set the clear color for the backbuffer.
-            RC.ClearColor = new float4(0.1f, 0.3f, 0.2f, 1);
+            RC.ClearColor = new float4(0.0f, 0.0f, 0.0f, 1);
         }
 
         // RenderAFrame is called once a frame
@@ -150,24 +281,34 @@ namespace Fusee.Tutorial.Core
             //Input Interaction rotation
             if (Mouse.LeftButton)
             {
-                _alpha.y += mouseVel.x * 0.00001f;
-                _alpha.x += mouseVel.y * 0.00001f;
-                //_alpha.z -= System.Math.Abs((mouseVel.x * 0.00001f) * (mouseVel.y * 0.00001f));
+                _alpha.y += mouseVel.x * 0.00005f;
+                _alpha.x += mouseVel.y * 0.00005f;
+                //_alpha.z += (_alpha.x * _alpha.y) * 0.00005f;
+                _alpha.z += (_alpha.x * 0.00003f) + (_alpha.y * 0.00003f);
             }
             else if (Keyboard.UpDownAxis != 0)
             {
-                steps = Keyboard.UpDownAxis / 100.0f;
+                steps = Keyboard.UpDownAxis / 65.0f;
                 _alpha.x -= steps;
             }
             else if (Keyboard.LeftRightAxis != 0)
             {
-                steps = Keyboard.LeftRightAxis / 100.0f;
+                steps = Keyboard.LeftRightAxis/65.0f;
                 _alpha.z -= steps;
+            }
+            else
+            {
+                _alpha.x += 0.005f;
+                _alpha.y += 0.002f;
+                _alpha.z += 0.001f;
             }
 
             //Umrechnung auf Screen Koordinaten -1/1
             mousePos.x = ((1.0f / (Width / 2.0f)) * mousePos.x) - 1.0f;
             mousePos.y = (((1.0f / (Height / 2.0f)) * mousePos.y) - 1.0f) * -1.0f;
+
+            //_mesh.Vertices[0].y *= (float) System.Math.Sin(_alpha.x);
+           // _mesh.Vertices[1].y = _mesh.Vertices[1].y - 1;
 
             //Set values to the specific uniform shader value
             RC.SetShaderParam(_alphaParam_Vertex, _alpha);
@@ -175,6 +316,11 @@ namespace Fusee.Tutorial.Core
             RC.SetShaderParam(_mousePosParam_Vertex, mousePos);
 
             RC.Render(_mesh);
+
+            RC.Render(_mesh_2);
+            RC.Render(_mesh_4);
+            RC.Render(_mesh_3);
+            RC.Render(_mesh_5);
 
             // Swap buffers: Show the contents of the backbuffer (containing the currently rerndered farame) on the front buffer.
             Present();
