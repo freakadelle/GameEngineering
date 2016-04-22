@@ -318,7 +318,7 @@ Building and running thesse changes show a lit cylinder:
 	The lighting calculation would be adjusted to the distance from the camera/view.
  - More hands-on and less maths: How would you apply colors to objects other than the grey we're having now, but still
    maintaining that 3D shaded look we worked so hard on?
-	Apply the intensity to the previous used normal calculation for rgb.
+	Apply the intensity to the previous used normal calculation for rgb. But instead of using the manipulated normal (transformed by the FUSEE_MVP) use the standard normal from the fu_normal.
    
 ##Self Contained Objects
 We can now have different sets of 3D geometry each making a model (cubes, spheres, cylinders, ...), We can position, scale and rotate 
