@@ -310,7 +310,9 @@ Building and running thesse changes show a lit cylinder:
    [OpenGL Red Book, Appendix F] (http://www.glprogramming.com/red/appendixf.html) *Transforming Normals* until *Whew!* and then try to explain:
    - Why it is mathematically correct to use this matrix and why it's wrong to use the modelview matrix to tranform
      the normals?
+	Because normals should be transformed with nonsingular calculations. The modelview could have vertices/normals that trigger a nonsingular transformation. That happens when all four values x, y, z, w are zero.
    - Why - at least in our example - it seems to make no difference using the MV or ITMV matrix?
+   	Because the normals stored in Cylinder.fus have no points which trigger a nonsingular transformation. That means, no normal in the Cylinder.fus has the value (0, 0, 0).
  - What would happen if we performed the lighting calculation in clip space - in other words: if we transformed the 
    normals using MVP and not MV only?
  - More hands-on and less maths: How would you apply colors to objects other than the grey we're having now, but still
