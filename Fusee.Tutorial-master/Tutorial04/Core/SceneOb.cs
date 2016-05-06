@@ -49,9 +49,9 @@ namespace Fusee.Tutorial.Core
             target.x = ((float)(rnd.NextDouble() * 2.0f) - 1.0f);
             target.y = ((float)(rnd.NextDouble() * 2.0f) - 1.0f);
             target.z = ((float)(rnd.NextDouble() * 2.0f) - 1.0f);
-            target.w = rnd.Next(50, 200);
+            target.w = rnd.Next(20, 100);
 
-            speed = rnd.Next(20, 100);
+            speed = rnd.Next(500, 700);
         }
 
         public Boolean hasReachedTarget()

@@ -179,7 +179,7 @@ namespace Fusee.Tutorial.Core
             rnd = new Random();
 
             // Set the clear color for the backbuffer
-            RC.ClearColor = new float4(1, 1, 1, 1);
+            RC.ClearColor = new float4(0.2f, 0.2f, 0.2f, 1);
         }
 
         
